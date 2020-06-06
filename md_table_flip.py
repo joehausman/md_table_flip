@@ -4,18 +4,19 @@ def find_num_columns(line):
     # @TODO: possibly handle different formatting of tables (wth outer borders)
     return line.count('|') + 1
 
-def find_col_max(columns):
+def find_col_max(infile_list, line_num, columns):
     col_max = []
     for i in range(columns):
         col_max.append(0)
-    print(str(col_max))
+    # print(str(col_max))
+    # iterate through the table to find the max width for each column
     return col_max
 
 def format_table(infile_list, line_num):
     # @TODO: possibly handle different formatting of tables (wth outer borders)
     table_start = line_num
     columns = find_num_columns(infile_list[line_num])
-    col_max = find_col_max(columns)
+    col_max = find_col_max(infile_list, line_num, columns)
     # print(str(columns) + ' columns')
 
 def find_next_table(infile_list):
