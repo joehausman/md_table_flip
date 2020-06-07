@@ -11,10 +11,11 @@ def check_column_error(row, num_col, line_num):
     return
 
 def find_col_max(infile_list, line_num, columns):
+    # @TODO: modularize iterating through the table (looks almost identical to pad_cells() )
     col_max = []
     for i in range(columns):
         col_max.append(0)
-    print(str(col_max)) # DEBUGGING
+    # print(str(col_max)) # DEBUGGING
     # iterate through the table to find the max width for each column
     end = len(infile_list)
     while '|' in infile_list[line_num]:
@@ -30,10 +31,36 @@ def find_col_max(infile_list, line_num, columns):
         line_num += 1
         if line_num == end:
             break
-    print(str(col_max)) # DEBUGGING
+    # print(str(col_max)) # DEBUGGING
     return col_max
 
-def pad_cells(infile_list, table_start, col_max):
+def padding(thing, width):
+    thing_list = [thing]
+    for x in range(len(thing), width):
+        thing_list.append(' ')
+    return ''.join(thing_list)
+
+def pad_cells(infile_list, line_num, col_max):
+    # @TODO: modularize iterating through the table (looks almost identical to find_col_max() )
+    columns = len(col_max)
+    end = len(infile_list)
+    while '|' in infile_list[line_num]:
+        curr_row = infile_list[line_num].split('|')
+        check_column_error(curr_row, columns, line_num)
+        i = 0
+        new_row = []
+        for i in range(len(curr_row)):
+            curr_col = curr_row[i].strip()
+            curr_col_len = len(curr_col)
+            if curr_col_len < col_max[i]:
+                curr_col = padding(curr_col, col_max[i])
+                # col_max[i] = curr_col_len
+                # print('curr_row[' + str(i) + '] : ' + curr_row[i]) # DEBUGGING
+            new_row.append(curr_col)
+        infile_list[line_num] = (' | '.join(new_row) + '\n')
+        line_num += 1
+        if line_num == end:
+            break
     # add stuff here
     return
 
