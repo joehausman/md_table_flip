@@ -33,11 +33,16 @@ def find_col_max(infile_list, line_num, columns):
     print(str(col_max)) # DEBUGGING
     return col_max
 
+def pad_cells(infile_list, table_start, col_max):
+    # add stuff here
+    return
+
 def format_table(infile_list, line_num):
     # @TODO: possibly handle different formatting of tables (wth outer borders)
     table_start = line_num
-    columns = find_num_columns(infile_list[line_num])
-    col_max = find_col_max(infile_list, line_num, columns)
+    columns = find_num_columns(infile_list[table_start])
+    col_max = find_col_max(infile_list, table_start, columns)
+    pad_cells(infile_list, table_start, col_max)
     # print(str(columns) + ' columns') # DEBUGGING
 
 def find_next_table(infile_list):
