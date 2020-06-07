@@ -36,8 +36,12 @@ def find_col_max(infile_list, line_num, columns):
 
 def padding(thing, width):
     thing_list = [thing]
+    padchar = ' '
+    if '---' in thing:
+        # assume the row is a horizontal line
+        padchar = '-'
     for x in range(len(thing), width):
-        thing_list.append(' ')
+        thing_list.append(padchar)
     return ''.join(thing_list)
 
 def pad_cells(infile_list, line_num, col_max):
