@@ -4,22 +4,29 @@ def find_num_columns(line):
     # @TODO: possibly handle different formatting of tables (wth outer borders)
     return line.count('|') + 1
 
+def check_column_error(row, num_col, line_num):
+    if len(row) != num_col:
+        print('error: wrong number of columns on line ' + str(line_num + 1), file = sys.stderr)
+        exit(1)
+    return
+
 def find_col_max(infile_list, line_num, columns):
     col_max = []
     for i in range(columns):
         col_max.append(0)
-    # print(str(col_max))
+    print(str(col_max)) # DEBUGGING
     # iterate through the table to find the max width for each column
     end = len(infile_list)
     while '|' in infile_list[line_num]:
         curr_row = infile_list[line_num].split('|')
+        check_column_error(curr_row, columns, line_num)
         i = 0
         for i in range(len(curr_row)):
             curr_col = curr_row[i].strip()
             curr_col_len = len(curr_col)
             if curr_col_len > col_max[i]:
                 col_max[i] = curr_col_len
-                print('curr_row[' + str(i) + '] : ' + curr_row[i]) # DEBUGGING
+                # print('curr_row[' + str(i) + '] : ' + curr_row[i]) # DEBUGGING
         line_num += 1
         if line_num == end:
             break
@@ -31,7 +38,7 @@ def format_table(infile_list, line_num):
     table_start = line_num
     columns = find_num_columns(infile_list[line_num])
     col_max = find_col_max(infile_list, line_num, columns)
-    # print(str(columns) + ' columns')
+    # print(str(columns) + ' columns') # DEBUGGING
 
 def find_next_table(infile_list):
     curr_line = 0
