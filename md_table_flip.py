@@ -10,6 +10,20 @@ def find_col_max(infile_list, line_num, columns):
         col_max.append(0)
     # print(str(col_max))
     # iterate through the table to find the max width for each column
+    end = len(infile_list)
+    while '|' in infile_list[line_num]:
+        curr_row = infile_list[line_num].split('|')
+        i = 0
+        for i in range(len(curr_row)):
+            curr_col = curr_row[i].strip()
+            curr_col_len = len(curr_col)
+            if curr_col_len > col_max[i]:
+                col_max[i] = curr_col_len
+                print('curr_row[' + str(i) + '] : ' + curr_row[i]) # DEBUGGING
+        line_num += 1
+        if line_num == end:
+            break
+    print(str(col_max)) # DEBUGGING
     return col_max
 
 def format_table(infile_list, line_num):
