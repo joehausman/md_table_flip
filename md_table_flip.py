@@ -44,6 +44,8 @@ def padding(thing, width):
         thing_list.append(padchar)
     return ''.join(thing_list)
 
+# pad cells appropriately
+# return the number of the line after the table so that processing can continue
 def pad_cells(infile_list, line_num, col_max):
     # @TODO: modularize iterating through the table (looks almost identical to find_col_max() )
     columns = len(col_max)
@@ -66,23 +68,27 @@ def pad_cells(infile_list, line_num, col_max):
         if line_num == end:
             break
     # add stuff here
-    return
+    return line_num
 
 def format_table(infile_list, line_num):
     # @TODO: possibly handle different formatting of tables (wth outer borders)
     table_start = line_num
+    # print('table_start: ' + str(table_start))
     columns = find_num_columns(infile_list[table_start])
     col_max = find_col_max(infile_list, table_start, columns)
-    pad_cells(infile_list, table_start, col_max)
+    end_of_table = pad_cells(infile_list, table_start, col_max)
+    return end_of_table
     # print(str(columns) + ' columns') # DEBUGGING
 
-def find_next_table(infile_list):
-    curr_line = 0
+def find_next_table(infile_list, line_num):
+    curr_line = line_num
     listlength = len(infile_list)
     while curr_line < listlength:
         if '|' in infile_list[curr_line]:
             break
         curr_line += 1
+    if curr_line == listlength:
+        curr_line = -1 # signal end of file reached
     # print('table at ' + str(curr_line))
     return curr_line
 
@@ -90,8 +96,14 @@ def find_next_table(infile_list):
     #     if '|' in line:
     #
 def expand(infile_list):
-    line_num = find_next_table(infile_list)
-    format_table(infile_list, line_num)
+    line_num = 0
+    listlength = len(infile_list)
+    while line_num < listlength:
+        # print('line_num: ' + str(line_num)) # DEBUGGING
+        line_num = find_next_table(infile_list, line_num)
+        if line_num == -1:
+            break # end of file reached
+        line_num = format_table(infile_list, line_num)
     return ''.join(infile_list)
 
 def read_input(infile):
