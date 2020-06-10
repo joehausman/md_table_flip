@@ -18,7 +18,7 @@ def find_col_max(infile_list, line_num, columns):
     for i in range(columns):
         col_max.append(0)
     end = len(infile_list)
-    while '|' in infile_list[line_num]: # while in table
+    while '|' in infile_list[line_num]:         # while in table
         curr_row = infile_list[line_num].split('|')
         check_column_error(curr_row, columns, line_num)
         i = 0
@@ -35,8 +35,7 @@ def find_col_max(infile_list, line_num, columns):
 def padding(thing, width):
     thing_list = [thing]
     padchar = ' '
-    if '---' in thing:
-        # assume the row is a horizontal line
+    if '---' in thing:              # assume the row is a horizontal line
         padchar = '-'
     for x in range(len(thing), width):
         thing_list.append(padchar)
@@ -48,12 +47,12 @@ def pad_cells(infile_list, line_num, col_max):
     # @TODO: modularize iterating through the table (looks almost identical to find_col_max() )
     columns = len(col_max)
     end = len(infile_list)
-    while '|' in infile_list[line_num]: # while in table
+    while '|' in infile_list[line_num]:         # while in table
         curr_row = infile_list[line_num].split('|')
         check_column_error(curr_row, columns, line_num)
         i = 0
         new_row = []
-        for i in range(len(curr_row)):
+        for i in range(len(curr_row)):          # for each column in current row
             curr_col = curr_row[i].strip()
             curr_col_len = len(curr_col)
             if curr_col_len < col_max[i]:
@@ -65,6 +64,9 @@ def pad_cells(infile_list, line_num, col_max):
             break
     return line_num
 
+# edit infile_list in place
+# starts at the beginning of a table and edits only that table
+# return line number corresponding to the end of the table
 def format_table(infile_list, line_num):
     # @TODO: possibly handle different formatting of tables (with outer borders)
     table_start = line_num
@@ -73,6 +75,7 @@ def format_table(infile_list, line_num):
     end_of_table = pad_cells(infile_list, table_start, col_max)
     return end_of_table
 
+# return line number of next table
 def find_next_table(infile_list, line_num):
     curr_line = line_num
     listlength = len(infile_list)
@@ -81,17 +84,18 @@ def find_next_table(infile_list, line_num):
             break
         curr_line += 1
     if curr_line == listlength:
-        curr_line = -1 # signal end of file reached
+        curr_line = -1              # signal end of file reached
     return curr_line
 
+# find all the tables and expand them
 def expand(infile_list):
     # @TODO: modularize (looks very similar to contract() )
     line_num = 0
     listlength = len(infile_list)
     while line_num < listlength:
         line_num = find_next_table(infile_list, line_num)
-        if line_num == -1:
-            break # end of file reached
+        if line_num == -1:          # end of file reached
+            break
         line_num = format_table(infile_list, line_num)
     return ''.join(infile_list)
 
@@ -104,9 +108,8 @@ def strip_cells(infile_list, line_num):
         new_row = []
         for i in range(len(curr_row)):
             curr_col = curr_row[i].strip()
-            if '---' in curr_col:
-                # assume the row is a horizontal line
-                curr_col = '---' # shorten horizontal line
+            if '---' in curr_col:       # assume the row is a horizontal line
+                curr_col = '---'        # shorten horizontal line
             new_row.append(curr_col)
         infile_list[line_num] = (' | '.join(new_row) + '\n')
         line_num += 1
@@ -122,20 +125,24 @@ def deformat_table(infile_list, line_num):
     end_of_table = strip_cells(infile_list, table_start)
     return end_of_table
 
+# find all the tables and contract them
 def contract(infile_list):
     # @TODO: modularize (looks very similar to expand() )
     line_num = 0
     listlength = len(infile_list)
     while line_num < listlength:
         line_num = find_next_table(infile_list, line_num)
-        if line_num == -1:
-            break # end of file reached
+        if line_num == -1:          # end of file reached
+            break
         line_num = deformat_table(infile_list, line_num)
     return ''.join(infile_list)
 
 def read_input(infile):
     infile_list = infile.readlines()
     return infile_list
+
+# ------------------------------------------------------------------------------
+# program start
 
 if len(sys.argv) != 4:
     print('error: wrong number of arguments; usage: md_table_flip.py <infile> <outfile> e|c\n' +
