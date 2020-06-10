@@ -4,20 +4,21 @@ def find_num_columns(line):
     # @TODO: possibly handle different formatting of tables (wth outer borders)
     return line.count('|') + 1
 
+# make sure the given row has the correct number of columns
 def check_column_error(row, num_col, line_num):
     if len(row) != num_col:
         print('error: wrong number of columns on line ' + str(line_num + 1), file = sys.stderr)
         exit(1)
     return
 
+# iterate through the table to find the max width for each column
 def find_col_max(infile_list, line_num, columns):
     # @TODO: modularize iterating through the table (looks almost identical to pad_cells() )
     col_max = []
     for i in range(columns):
         col_max.append(0)
-    # iterate through the table to find the max width for each column
     end = len(infile_list)
-    while '|' in infile_list[line_num]:
+    while '|' in infile_list[line_num]: # while in table
         curr_row = infile_list[line_num].split('|')
         check_column_error(curr_row, columns, line_num)
         i = 0
@@ -47,7 +48,7 @@ def pad_cells(infile_list, line_num, col_max):
     # @TODO: modularize iterating through the table (looks almost identical to find_col_max() )
     columns = len(col_max)
     end = len(infile_list)
-    while '|' in infile_list[line_num]:
+    while '|' in infile_list[line_num]: # while in table
         curr_row = infile_list[line_num].split('|')
         check_column_error(curr_row, columns, line_num)
         i = 0
@@ -84,18 +85,55 @@ def find_next_table(infile_list, line_num):
     return curr_line
 
 def expand(infile_list):
+    # @TODO: modularize (looks very similar to contract() )
     line_num = 0
     listlength = len(infile_list)
     while line_num < listlength:
-        # print('line_num: ' + str(line_num)) # DEBUGGING
         line_num = find_next_table(infile_list, line_num)
         if line_num == -1:
             break # end of file reached
         line_num = format_table(infile_list, line_num)
     return ''.join(infile_list)
 
+def strip_cells(infile_list, line_num):
+    # @TODO: modularize iterating through the table (looks almost identical to pad_cells() )
+    # columns = len(col_max)
+    end = len(infile_list)
+    while '|' in infile_list[line_num]: # while in table
+        curr_row = infile_list[line_num].split('|')
+        # check_column_error(curr_row, columns, line_num)
+        i = 0
+        new_row = []
+        for i in range(len(curr_row)):
+            curr_col = curr_row[i].strip()
+            # curr_col_len = len(curr_col)
+            # if curr_col_len < col_max[i]:
+            #     curr_col = padding(curr_col, col_max[i])
+            new_row.append(curr_col)
+        infile_list[line_num] = (' | '.join(new_row) + '\n')
+        line_num += 1
+        if line_num == end:
+            break
+    return line_num
+
+# edit infile_list in place
+# starts at the beginning of a table and edits only that table
+# return line number corresponding to the end of the table
+def deformat_table(infile_list, line_num):
+    table_start = line_num
+    end_of_table = strip_cells(infile_list, table_start)
+    return end_of_table
+
 def contract(infile_list):
-    return infile_list
+    # @TODO: modularize (looks very similar to expand() )
+    line_num = 0
+    listlength = len(infile_list)
+    while line_num < listlength:
+        line_num = find_next_table(infile_list, line_num)
+        if line_num == -1:
+            break # end of file reached
+        line_num = deformat_table(infile_list, line_num)
+    return ''.join(infile_list)
 
 def read_input(infile):
     infile_list = infile.readlines()
