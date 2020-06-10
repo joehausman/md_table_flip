@@ -106,6 +106,9 @@ def expand(infile_list):
         line_num = format_table(infile_list, line_num)
     return ''.join(infile_list)
 
+def contract(infile_list):
+    return infile_list
+
 def read_input(infile):
     infile_list = infile.readlines()
     return infile_list
