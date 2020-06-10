@@ -15,7 +15,6 @@ def find_col_max(infile_list, line_num, columns):
     col_max = []
     for i in range(columns):
         col_max.append(0)
-    # print(str(col_max)) # DEBUGGING
     # iterate through the table to find the max width for each column
     end = len(infile_list)
     while '|' in infile_list[line_num]:
@@ -27,11 +26,9 @@ def find_col_max(infile_list, line_num, columns):
             curr_col_len = len(curr_col)
             if curr_col_len > col_max[i]:
                 col_max[i] = curr_col_len
-                # print('curr_row[' + str(i) + '] : ' + curr_row[i]) # DEBUGGING
         line_num += 1
         if line_num == end:
             break
-    # print(str(col_max)) # DEBUGGING
     return col_max
 
 def padding(thing, width):
@@ -60,25 +57,20 @@ def pad_cells(infile_list, line_num, col_max):
             curr_col_len = len(curr_col)
             if curr_col_len < col_max[i]:
                 curr_col = padding(curr_col, col_max[i])
-                # col_max[i] = curr_col_len
-                # print('curr_row[' + str(i) + '] : ' + curr_row[i]) # DEBUGGING
             new_row.append(curr_col)
         infile_list[line_num] = (' | '.join(new_row) + '\n')
         line_num += 1
         if line_num == end:
             break
-    # add stuff here
     return line_num
 
 def format_table(infile_list, line_num):
-    # @TODO: possibly handle different formatting of tables (wth outer borders)
+    # @TODO: possibly handle different formatting of tables (with outer borders)
     table_start = line_num
-    # print('table_start: ' + str(table_start))
     columns = find_num_columns(infile_list[table_start])
     col_max = find_col_max(infile_list, table_start, columns)
     end_of_table = pad_cells(infile_list, table_start, col_max)
     return end_of_table
-    # print(str(columns) + ' columns') # DEBUGGING
 
 def find_next_table(infile_list, line_num):
     curr_line = line_num
@@ -89,12 +81,8 @@ def find_next_table(infile_list, line_num):
         curr_line += 1
     if curr_line == listlength:
         curr_line = -1 # signal end of file reached
-    # print('table at ' + str(curr_line))
     return curr_line
 
-    # for line in infile_list:
-    #     if '|' in line:
-    #
 def expand(infile_list):
     line_num = 0
     listlength = len(infile_list)
