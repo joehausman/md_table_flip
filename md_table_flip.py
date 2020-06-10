@@ -130,7 +130,7 @@ if mode == 'e':
 elif mode == 'c':
     formatted_text = contract(infile_list)
 else:
-    print("error: undefined mode ('e' (expand) or 'c' (contract) expected", file = sys.stderr)
+    print("error: undefined mode ('e' (expand) or 'c' (contract) expected)", file = sys.stderr)
     exit(1)
 
 with open(outfile_name, 'w') as outfile:
