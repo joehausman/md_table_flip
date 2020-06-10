@@ -97,18 +97,16 @@ def expand(infile_list):
 
 def strip_cells(infile_list, line_num):
     # @TODO: modularize iterating through the table (looks almost identical to pad_cells() )
-    # columns = len(col_max)
     end = len(infile_list)
     while '|' in infile_list[line_num]: # while in table
         curr_row = infile_list[line_num].split('|')
-        # check_column_error(curr_row, columns, line_num)
         i = 0
         new_row = []
         for i in range(len(curr_row)):
             curr_col = curr_row[i].strip()
-            # curr_col_len = len(curr_col)
-            # if curr_col_len < col_max[i]:
-            #     curr_col = padding(curr_col, col_max[i])
+            if '---' in curr_col:
+                # assume the row is a horizontal line
+                curr_col = '---' # shorten horizontal line
             new_row.append(curr_col)
         infile_list[line_num] = (' | '.join(new_row) + '\n')
         line_num += 1
