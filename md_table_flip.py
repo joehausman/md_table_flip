@@ -111,8 +111,8 @@ def read_input(infile):
     return infile_list
 
 if len(sys.argv) != 4:
-    print('error: wrong number of arguments; usage: md_table_flip.py <infile> <outfile> e|c\n
-          e: expand mode; c: contract mode', file = sys.stderr)
+    print('error: wrong number of arguments; usage: md_table_flip.py <infile> <outfile> e|c\n' +
+    'e: expand mode; c: contract mode', file = sys.stderr)
     exit(1)
 
 infile_name = sys.argv[1]
