@@ -110,12 +110,14 @@ def read_input(infile):
     infile_list = infile.readlines()
     return infile_list
 
-if len(sys.argv) != 3:
-    print('error: wrong number of arguments; usage: md_table_flip.py <infile> <outfile>', file = sys.stderr)
+if len(sys.argv) != 4:
+    print('error: wrong number of arguments; usage: md_table_flip.py <infile> <outfile> e|c\n
+          e: expand mode; c: contract mode', file = sys.stderr)
     exit(1)
 
 infile_name = sys.argv[1]
 outfile_name = sys.argv[2]
+mode = sys.argv[3]
 
 infile_list = []
 
@@ -123,7 +125,13 @@ with open(infile_name, 'r') as infile:
     infile_list = read_input(infile)
 
 formatted_text = ''
-formatted_text = expand(infile_list)
+if mode == 'e':
+    formatted_text = expand(infile_list)
+elif mode == 'c':
+    formatted_text = contract(infile_list)
+else:
+    print("error: undefined mode ('e' (expand) or 'c' (contract) expected", file = sys.stderr)
+    exit(1)
 
 with open(outfile_name, 'w') as outfile:
     outfile.write(formatted_text)
